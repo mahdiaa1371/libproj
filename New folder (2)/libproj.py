@@ -4,9 +4,10 @@ print("choose between 0 to 2:")
 print("0 for showing the list of books ")
 print("1 for inserting book in the list")
 print("2 for inserting new members")
-print("3 for exiting file")
+print("3 for borrowing books")
+print("4 for exiting menu")
 choice=0
-while choice!=3:
+while choice!=4:
     choice = int(input("please insert your direction"))
     import mysql.connector
 
@@ -43,3 +44,24 @@ while choice!=3:
         mycursor.execute(sql, val)
         mydb.commit()
         print(mycursor.rowcount, "member record inserted.")
+    elif choice==3:
+        mycursor.execute("SELECT book_name FROM bookid")
+        myresult = mycursor.fetchall()
+
+        for x in myresult:
+            print("*" * 100)
+
+            print(x)
+            print("*" * 100)
+        book_borrow_n = input("enter the name of book you wanted to borrow\n")
+        code = input("please enter your national code \n")
+        mycursor = mydb.cursor()
+        sql = "SELECT mid FROM member WHERE n_code =" + code
+        mycursor.execute(sql)
+        memberID = mycursor.fetchall()
+
+        sql2 = "INSERT INTO borrow (bid, mid) VALUES (%s, %s)"
+        val2 = (book_borrow_n, memberID[0][0])
+        mycursor.execute(sql2, val2)
+        mydb.commit()
+        print(mycursor.rowcount, "record inserted.")
